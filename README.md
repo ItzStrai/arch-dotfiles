@@ -12,6 +12,6 @@ Just use these things. Figure it out yourself.
 cd arch-dotfiles
 
 ln -sf $(pwd)/nvim/.config/nvim ~/.config/nvim
-ln -sf $(pwd)/bash/.bashrc ~/.config/
+ln -sf $(pwd)/bash/.bashrc ~/.config/.bashrc
 ```
 voila!
