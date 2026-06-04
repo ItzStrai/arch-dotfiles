@@ -1,28 +1,17 @@
-# Arch-dotfiles
+# arch-dotfiles
 
-![something like a rice](.dotfiles/Something.png)
+![something like a rice](floating-windows.png)
+
+![something like a rice](tiling-windows.png)
 
 ## Installation
 
-Personal files are organized through **GNU Stow**.
-Because of that:
+Just use these things. Figure it out yourself.
+
 ```bash
-yay -S stow
+cd arch-dotfiles
+
+ln -sf $(pwd)/nvim/.config/nvim ~/.config/nvim
+ln -sf $(pwd)/bash/.bashrc ~/.config/
 ```
-
-And setup:
-```bash
-cd ~/.dotfiles
-
-stow -R -t ~ *
-```
-
-Or just some packages:
-```bash
-cd ~/.dotfiles
-
-stow -R -t ~ niri waybar nvim 
-```
-
 voila!
-

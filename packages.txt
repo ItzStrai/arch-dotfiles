@@ -1,0 +1,12 @@
+niri
+btop
+fastfetch
+kitty
+mpv
+niri
+noctalia-shell
+neovim
+wl-clipboard
+wget
+nautilus
+loupe

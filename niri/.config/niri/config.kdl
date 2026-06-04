@@ -1,0 +1,340 @@
+// INPUT //
+input {
+    focus-follows-mouse max-scroll-amount="0%"
+
+    keyboard {
+        xkb {
+            layout "us,ru"
+            options "grp:alt_shift_toggle"
+        }
+        track-layout "global"
+    }
+    touchpad {
+        tap
+        natural-scroll
+        accel-speed 0.2
+        accel-profile "flat"
+        scroll-factor 0.2
+    }
+
+    mouse {
+        accel-speed 0.7
+        scroll-factor 0.5
+        accel-profile "flat"
+    }        
+}
+// --------------------------------------------------------------------------- //
+
+// OUTPUT //
+output "eDP-1" {
+    mode "1920x1080@144"
+    scale 1
+    transform "normal"
+    position x=0 y=0
+    variable-refresh-rate
+    backdrop-color "#000000"
+}
+
+output "HDMI-A-1" {
+
+    mode "3840x2160@60"
+    position x=0 y=-1440
+        scale 1
+}
+
+// --------------------------------------------------------------------------- //
+
+// LAYOUT //
+layout {
+    gaps 12
+
+    struts {
+        left 30
+        right 30
+    }
+
+    always-center-single-column
+    
+    background-color "#000000"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+
+
+    focus-ring {
+        width 2
+        active-color   "#7aa2f7d9"
+    }
+
+    shadow {
+        color "#15161e70"
+    }
+
+    tab-indicator {
+        active-color   "#7aa2f7"
+        inactive-color "#003dbe"
+        urgent-color   "#f7768e"
+    }
+
+    insert-hint {
+        color "#7aa2f7d9"
+    }
+
+}
+
+// --------------------------------------------------------------------------- //
+
+// STARTUP //
+spawn-sh-at-startup "qs -c noctalia-shell"
+spawn-sh-at-startup "niri msg action do-screen-transition -d 2800"
+
+spawn-sh-at-startup "Telegram -startintray"
+spawn-sh-at-startup "steam -silent"
+spawn-sh-at-startup "sleep 3 & easyeffects --gapplication-service"
+
+// --------------------------------------------------------------------------- //
+
+// MISC //
+hotkey-overlay {
+    skip-at-startup
+}
+
+prefer-no-csd
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+// --------------------------------------------------------------------------- //
+
+
+animations {
+    slowdown 2
+    workspace-switch {
+        spring damping-ratio=0.78 stiffness=600 epsilon=0.0001
+    }
+    
+    // Window open: Match QS elementMoveEnter (~400ms, emphasized decel)
+    // Lower stiffness = slower start, smooth decel landing
+    window-open {
+        spring damping-ratio=0.82 stiffness=800 epsilon=0.0001
+    }
+    
+    // Window close: Match QS elementMoveExit (~200ms, quick accel out)
+    // Higher stiffness = snappier, quick exit
+    window-close {
+        spring damping-ratio=0.88 stiffness=900 epsilon=0.0001
+    }
+    
+    // Horizontal view: Smooth panning with slight overshoot
+    horizontal-view-movement {
+        spring damping-ratio=0.80 stiffness=550 epsilon=0.0001
+    }
+    
+    // Window movement: Interactive feel, responsive with gentle settle
+    window-movement {
+        spring damping-ratio=0.85 stiffness=650 epsilon=0.0001
+    }
+    
+    // Column/window resize: Match QS elementResize (~300ms)
+    window-resize {
+        spring damping-ratio=0.88 stiffness=700 epsilon=0.0001
+    }
+    
+    // Config notification: Quick feedback
+    config-notification-open-close {
+        spring damping-ratio=0.90 stiffness=800 epsilon=0.0001
+    }
+    
+    // Screenshot UI: Snappy like QS fast effects
+    screenshot-ui-open {
+        spring damping-ratio=0.85 stiffness=750 epsilon=0.0001
+    }
+}
+
+
+window-rule {
+    geometry-corner-radius 6
+    clip-to-geometry true
+    draw-border-with-background false
+
+    background-effect {
+        blur true
+        noise 0.05
+        saturation 2.5
+    }
+}
+
+window-rule {
+    match is-floating=true
+    background-effect {
+        xray false
+    }
+}
+
+window-rule {
+    match app-id="steam_app_322170"
+    max-width 1280
+    max-height 720
+}
+
+window-rule {
+    match app-id="ringline"
+    opacity 0.2
+    open-floating true
+}
+
+
+window-rule {
+    match app-id="org.prismlauncher.PrismLauncher"
+    match app-id="org.gnome.Nautilus"
+    match app-id="obsidian"
+    opacity 0.85
+}
+
+window-rule {
+    match app-id="zen-browser" title="Picture-in-Picture"
+    open-floating true
+}
+
+window-rule {
+    match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
+    default-floating-position x=0 y=0 relative-to="bottom-right"
+    open-focused false
+}
+
+window-rule {
+    match app-id="org.telegram.desktop"
+    max-width 510
+}
+
+window-rule {
+    match app-id="warspear_64"
+    match app-id="Xpra" title="Warspear Online on hyarch.lan"
+    max-width 1344
+    max-height 1080
+    min-width 600
+}
+
+layer-rule {
+    match namespace="launcher"
+    match namespace="noctalia-background"
+    match namespace="noctalia-dock"
+
+    background-effect {
+        blur true
+        noise 0.05
+        saturation 3
+        xray false
+    }
+}
+
+layer-rule {
+    match namespace="launcher"
+    
+    opacity 0.85
+    geometry-corner-radius 10
+}
+
+layer-rule {
+    match namespace="noctalia-overview"
+    place-within-backdrop true
+}
+
+binds {
+    Mod+Q repeat=false { spawn "kitty"; }
+    Mod+Grave repeat=false { spawn-sh "qs -c noctalia-shell ipc call plugin:assistant-panel toggle"; }
+    Mod+Shift+Q repeat=false { spawn-sh "kitty -e ssh hyarch.lan"; }
+    Ctrl+Shift+Escape repeat=false { spawn-sh "kitty -e btop"; }
+    Mod+E repeat=false { spawn-sh "kitty -e yazi"; }
+    Mod+Shift+E repeat=false { spawn-sh "kitty -e ssh hyarch.lan -t yazi"; }
+
+    // Mod+R repeat=false { spawn "fuzzel"; }
+    Mod+R repeat=false { spawn-sh "qs -c noctalia-shell ipc call launcher toggle"; }
+    Mod+Alt+L { spawn-sh "qs -c noctalia-shell ipc call lockScreen lock"; }
+
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.01+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.01-"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+2%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "2%-"; }
+    
+    Mod+Tab repeat=false { toggle-overview; }
+
+    Mod+C repeat=false { close-window; }
+
+    // Mod+Space repeat=false { spawn-sh "~/.config/niri/scripts/wallpaper.sh"; }
+    Mod+Space repeat=false { spawn-sh "qs -c noctalia-shell ipc call wallpaper random"; }
+
+    F10 { spawn-sh "obs-cmd --websocket obsws://localhost:4455/uF4GySSFxCRcJfsR recording toggle"; }
+    Shift+Home { spawn-sh "obs-cmd --websocket obsws://localhost:4455/uF4GySSFxCRcJfsR replay save"; }
+
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
+
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+    Mod+Ctrl+L     { move-column-right; }
+
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown   cooldown-ms=150 { focus-column-right; }
+    Mod+Shift+WheelScrollUp     cooldown-ms=150  { focus-column-left; }
+    
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-window-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-window-to-workspace-up; }
+    Mod+Ctrl+Shift+WheelScrollDown cooldown-ms=150 { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollUp cooldown-ms=150 { move-column-left; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+
+    Mod+BracketLeft cooldown-ms=150 { consume-or-expel-window-left; }
+    Mod+BracketRight cooldown-ms=150 { consume-or-expel-window-right; }
+
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+
+    Mod+W { switch-preset-column-width; }
+    Mod+Shift+W { switch-preset-column-width-back; }
+
+    Print { screenshot; }
+    Shift+Print { screenshot-screen; }
+    Mod+Print { screenshot-window; }
+
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    Mod+M { quit; }
+    Ctrl+Alt+Delete { quit; }
+}
